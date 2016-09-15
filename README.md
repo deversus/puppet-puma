@@ -21,7 +21,7 @@ Patches welcome for servers other than NGINX.
 
 
 ```puppet
-# Debian default values shown (except rvm, which defaults to false)
+# Debian default values shown (except rvm, which defaults to false, and service_type, which has no default)
 puma::app {'myapp':
     app_name           => 'myapp',
     app_root           => '/var/www/myapp/current',
@@ -34,6 +34,7 @@ puma::app {'myapp':
     preload_app        => true,
     rails_env          => 'production',
     rvm_ruby           => 'ruby-2.0.0-p0,
+    service_type       => 'upstart',
 }
 
 ```
