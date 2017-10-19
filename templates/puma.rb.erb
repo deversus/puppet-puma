@@ -2,7 +2,7 @@
 # MANAGED BY PUPPET
 # Module:: dsi::puma
 # Start Puma with next command:
-# RAILS_ENV=production bundle exec puma -C ./config/puma.rb
+# RACK_ENV=production bundle exec puma -C ./config/puma.rb
 
 # The directory to operate out of.
 #
@@ -14,7 +14,7 @@ directory '<%= @app_root %>'
 #
 # The default is set to puppet's environment
 #
-environment '<%= @rails_env %>'
+environment '<%= @env['RACK_ENV'] %>'
 
 # Daemonize the server into the background. Highly suggest that
 # this be combined with “pidfile” and “stdout_redirect”.
@@ -34,7 +34,7 @@ pidfile "<%= @puma_pid_path %>"
 # (“append”) specifies whether the output is appended, the default is
 # “false”.
 #
-stdout_redirect "<%= @puma_stdout_log_path %>", "<%= @puma_stderr_log_path %>"
+stdout_redirect "<%= @puma_stderr_log_path %>", "<%= @puma_stdout_log_path %>"
 
 # Disable request logging.
 #
@@ -54,8 +54,8 @@ threads <%= @min_threads %>, <%= @max_threads %>
 #
 # The default is “tcp://0.0.0.0:9292”.
 #
-# bind 'tcp://0.0.0.0:9292'
-bind "unix://<%= @puma_socket_path %>"
+bind 'tcp://0.0.0.0:<%= @port %>'
+#bind "unix://<%= @puma_socket_path %>"
 
 # Instead of “bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'” you
 # can also use the “ssl_bind” option.
@@ -71,11 +71,14 @@ bind "unix://<%= @puma_socket_path %>"
 #   puts 'On restart...'
 # end
 
+# Load the restart plugin
+plugin 'tmp_restart'
+
 # Command to use to restart puma. This should be just how to
 # load puma itself (ie. 'ruby -Ilib bin/puma'), not the arguments
 # to puma, as those are the same as the original process.
 #
-# restart_command '/u/app/lolcat/bin/restart_puma'
+restart_command "<%= @restart_command %>"
 
 # === Cluster mode ===
 
